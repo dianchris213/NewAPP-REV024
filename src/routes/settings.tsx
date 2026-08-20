@@ -416,7 +416,9 @@ export function FundSourceSheet({ onClose }: { onClose: () => void }) {
   const resetFilters = useCallback(() => {
     resetQuery();
     resetTypeFilter();
-  }, [resetQuery, resetTypeFilter]);
+    setFilterNotice(copy.filtersResetAll);
+  }, [resetQuery, resetTypeFilter, copy.filtersResetAll]);
+
 
   const list = useMemo(
     () =>
