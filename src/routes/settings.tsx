@@ -667,14 +667,20 @@ export function FundSourceSheet({ onClose }: { onClose: () => void }) {
               placeholder={copy.searchFundSources}
               aria-label={copy.searchFundSources}
               data-testid="fund-source-search"
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setFilterNotice("");
+                setQuery(e.target.value);
+              }}
               className="h-11 min-w-0 flex-1 rounded-2xl border border-outline-variant/30 bg-surface-container px-4 text-[13px] text-on-surface outline-none placeholder:text-on-surface-variant/50 focus-visible:ring-2 focus-visible:ring-primary/60"
             />
             <select
               value={typeFilter}
               aria-label={copy.fundSourceType}
               data-testid="fund-source-filter-type"
-              onChange={(e) => setTypeFilter(e.target.value as WalletType | "all")}
+              onChange={(e) => {
+                setFilterNotice("");
+                setTypeFilter(e.target.value as WalletType | "all");
+              }}
               className="h-11 rounded-2xl border border-outline-variant/30 bg-surface-container px-3 text-[13px] text-on-surface outline-none focus-visible:ring-2 focus-visible:ring-primary/60 sm:w-40"
             >
               <option value="all">{copy.allTypes}</option>
