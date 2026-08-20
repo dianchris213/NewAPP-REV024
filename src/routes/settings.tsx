@@ -412,6 +412,9 @@ export function FundSourceSheet({ onClose }: { onClose: () => void }) {
   const nameRef = useRef<HTMLInputElement | null>(null);
   const filtersDirty = !!query.trim() || typeFilter !== "all";
   const [filterNotice, setFilterNotice] = useState("");
+  // Filters the user changed in this session are respected as-is; only values
+  // restored from storage are validated against the loaded wallets.
+  const [filterTouched, setFilterTouched] = useState(false);
 
   const resetFilters = useCallback(() => {
     resetQuery();
@@ -435,7 +438,7 @@ export function FundSourceSheet({ onClose }: { onClose: () => void }) {
   // sanitizer is idempotent, so this runs on every data/filter change without
   // needing a one-shot ref and without looping.
   useEffect(() => {
-    if (!hydrated || !queryRestored || !typeRestored) return;
+    if (!hydrated || !queryRestored || !typeRestored || filterTouched) return;
     const result = sanitizeFilters(wallets, { query, type: typeFilter });
     if (!result.changed) return;
     if (result.filters.type !== typeFilter) resetTypeFilter();
@@ -448,6 +451,7 @@ export function FundSourceSheet({ onClose }: { onClose: () => void }) {
     wallets,
     typeFilter,
     query,
+    filterTouched,
     resetQuery,
     resetTypeFilter,
     copy.filtersResetAll,
@@ -669,6 +673,7 @@ export function FundSourceSheet({ onClose }: { onClose: () => void }) {
               data-testid="fund-source-search"
               onChange={(e) => {
                 setFilterNotice("");
+                setFilterTouched(true);
                 setQuery(e.target.value);
               }}
               className="h-11 min-w-0 flex-1 rounded-2xl border border-outline-variant/30 bg-surface-container px-4 text-[13px] text-on-surface outline-none placeholder:text-on-surface-variant/50 focus-visible:ring-2 focus-visible:ring-primary/60"
@@ -679,6 +684,7 @@ export function FundSourceSheet({ onClose }: { onClose: () => void }) {
               data-testid="fund-source-filter-type"
               onChange={(e) => {
                 setFilterNotice("");
+                setFilterTouched(true);
                 setTypeFilter(e.target.value as WalletType | "all");
               }}
               className="h-11 rounded-2xl border border-outline-variant/30 bg-surface-container px-3 text-[13px] text-on-surface outline-none focus-visible:ring-2 focus-visible:ring-primary/60 sm:w-40"
