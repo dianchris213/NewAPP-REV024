@@ -194,7 +194,6 @@ const dictionaries: Record<Language, Dict> = {
     undoIn: "Urungkan dalam",
     undoHint: "Tekan Enter untuk urungkan, Esc untuk tutup.",
     resetFilter: "Reset filter",
-    filtersResetAll: "Filters reset. All fund sources are shown.",
     filtersResetAll: "Filter direset. Semua sumber dana ditampilkan.",
     emptyFundSourceTitle: "Belum ada Sumber Dana",
     emptyFundSourceBody: "Buat Sumber Dana pertama Anda untuk mulai mencatat kantong dan saldo.",
