@@ -422,7 +422,6 @@ export function FundSourceSheet({ onClose }: { onClose: () => void }) {
     setFilterNotice(copy.filtersResetAll);
   }, [resetQuery, resetTypeFilter, copy.filtersResetAll]);
 
-
   const list = useMemo(
     () =>
       filterWallets(wallets, { query, type: typeFilter }).sort(
@@ -459,7 +458,6 @@ export function FundSourceSheet({ onClose }: { onClose: () => void }) {
 
   const hiddenCount = wallets.length - list.length;
   const filtersReady = queryRestored && typeRestored;
-
 
   const confirmTarget = confirmId ? (wallets.find((w) => w.id === confirmId) ?? null) : null;
 
@@ -658,8 +656,6 @@ export function FundSourceSheet({ onClose }: { onClose: () => void }) {
             {filterNotice}
           </p>
         ) : null}
-
-
 
         {wallets.length ? (
           <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
