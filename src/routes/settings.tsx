@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { AppShell, TopBar } from "@/components/AppShell";
 import { Icon } from "@/components/Icon";
@@ -16,6 +16,7 @@ import {
   type WalletType,
 } from "@/lib/app-store";
 import { isOneOf, isString, usePersistentState } from "@/lib/persistent-filter";
+import { filterWallets, sanitizeFilters } from "@/lib/fund-source-filter";
 import { t } from "@/lib/i18n";
 
 export const Route = createFileRoute("/settings")({
