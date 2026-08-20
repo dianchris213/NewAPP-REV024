@@ -180,3 +180,11 @@ Every pull-request run uploads `visual-regression-<PR number>` with `if: always(
 2. Scroll to **Artifacts** and download `visual-regression-<PR number>`.
 3. It contains `src/tests/__snapshots__/**` (committed layout contracts) and `test-report/vitest-report.json` (the Vitest diff report — failed assertions include the expected/received snapshot diff).
 4. If the diff is an intentional design change, run `bunx vitest run -u` locally and commit the updated snapshot; otherwise fix the component.
+
+## Fund source filters (Sumber Dana)
+
+- `src/lib/fund-source-filter.ts` holds pure helpers: `filterWallets`, `matchesFilters`, and `sanitizeFilters`.
+- Invariant: a persisted filter never hides fund sources. On hydration, a stored type filter that matches no wallet is reset to `all`, and a stored query with zero matches is cleared. The sanitizer is idempotent, so no one-shot ref is needed.
+- Filters changed by the user in the current session are respected as-is (an intentional "no results" empty state still shows).
+- The Reset filter button clears `tmab-fund-source-query` / `tmab-fund-source-type` from localStorage and announces the reset via an `aria-live="polite"` summary (`fund-source-filter-reset-notice`).
+- Tests: `src/tests/fund-source-filter.test.ts` (unit) and `src/tests/fund-source-persisted-filter.test.tsx` (integration/E2E: stale `cash` filter with `bank` wallets, reset + focus, API error path).
