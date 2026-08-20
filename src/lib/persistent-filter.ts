@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
  * Small, dependency-free persisted state for UI filters (search text, type
@@ -13,6 +13,7 @@ export function usePersistentState<T>(
 ) {
   const [value, setValue] = useState<T>(initial);
   const [restored, setRestored] = useState(false);
+  const initialRef = useRef(initial);
 
   useEffect(() => {
     try {
@@ -32,14 +33,20 @@ export function usePersistentState<T>(
   useEffect(() => {
     if (!restored) return;
     try {
-      window.localStorage.setItem(key, JSON.stringify(value));
+      // A value back at its neutral default is not worth persisting: keeping
+      // storage empty means a reset truly clears the filter keys.
+      if (JSON.stringify(value) === JSON.stringify(initialRef.current)) {
+        window.localStorage.removeItem(key);
+      } else {
+        window.localStorage.setItem(key, JSON.stringify(value));
+      }
     } catch {
       /* ignore quota errors */
     }
   }, [key, value, restored]);
 
   const reset = useCallback(() => {
-    setValue(initial);
+    setValue(initialRef.current);
     try {
       window.localStorage.removeItem(key);
     } catch {
