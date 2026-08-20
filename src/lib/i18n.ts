@@ -292,6 +292,8 @@ const dictionaries: Record<Language, Dict> = {
     undoIn: "Undo in",
     undoHint: "Press Enter to undo, Esc to dismiss.",
     resetFilter: "Reset filter",
+    filtersResetAll: "Filters reset. All fund sources are shown.",
+
     emptyFundSourceTitle: "No fund sources yet",
     emptyFundSourceBody: "Create your first fund source to start tracking pockets and balances.",
     emptyTypeHint: "Pick a type, then name the fund source.",
