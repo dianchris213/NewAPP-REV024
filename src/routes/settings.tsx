@@ -410,41 +410,49 @@ export function FundSourceSheet({ onClose }: { onClose: () => void }) {
   const [undoTarget, setUndoTarget] = useState<Wallet | null>(null);
   const nameRef = useRef<HTMLInputElement | null>(null);
   const filtersDirty = !!query.trim() || typeFilter !== "all";
+  const [filterNotice, setFilterNotice] = useState("");
 
-  const resetFilters = () => {
+  const resetFilters = useCallback(() => {
     resetQuery();
     resetTypeFilter();
-  };
+  }, [resetQuery, resetTypeFilter]);
 
-  const list = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return wallets
-      .filter((w) => (typeFilter === "all" ? true : w.type === typeFilter))
-      .filter((w) => (q ? w.name.toLowerCase().includes(q) : true))
-      .sort(
+  const list = useMemo(
+    () =>
+      filterWallets(wallets, { query, type: typeFilter }).sort(
         (a, b) =>
           WALLET_TYPES.indexOf(a.type) - WALLET_TYPES.indexOf(b.type) ||
           a.name.localeCompare(b.name),
-      );
-  }, [wallets, query, typeFilter]);
+      ),
+    [wallets, query, typeFilter],
+  );
 
-  // Reactive stale filter check: automatically resets filters if they hide all or some items incorrectly
+  // Hydration validation: persisted filters that cannot match any loaded
+  // wallet are discarded so no fund source is ever silently hidden. The
+  // sanitizer is idempotent, so this runs on every data/filter change without
+  // needing a one-shot ref and without looping.
   useEffect(() => {
     if (!hydrated || !queryRestored || !typeRestored) return;
-    const q = query.trim().toLowerCase();
-    const visible = wallets.filter(
-      (w) =>
-        (typeFilter === "all" ? true : w.type === typeFilter) &&
-        (q ? w.name.toLowerCase().includes(q) : true),
-    ).length;
-    if (wallets.length > 0 && visible < wallets.length) {
-      resetTypeFilter();
-      resetQuery();
-    }
-  }, [hydrated, queryRestored, typeRestored, wallets, typeFilter, query]);
+    const result = sanitizeFilters(wallets, { query, type: typeFilter });
+    if (!result.changed) return;
+    if (result.filters.type !== typeFilter) resetTypeFilter();
+    if (result.filters.query !== query) resetQuery();
+    setFilterNotice(copy.filtersResetAll);
+  }, [
+    hydrated,
+    queryRestored,
+    typeRestored,
+    wallets,
+    typeFilter,
+    query,
+    resetQuery,
+    resetTypeFilter,
+    copy.filtersResetAll,
+  ]);
 
   const hiddenCount = wallets.length - list.length;
   const filtersReady = queryRestored && typeRestored;
+
 
   const confirmTarget = confirmId ? (wallets.find((w) => w.id === confirmId) ?? null) : null;
 
