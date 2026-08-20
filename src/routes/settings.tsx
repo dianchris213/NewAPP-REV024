@@ -643,6 +643,20 @@ export function FundSourceSheet({ onClose }: { onClose: () => void }) {
           {status}
         </p>
 
+        {filterNotice ? (
+          <p
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            data-testid="fund-source-filter-reset-notice"
+            className="mt-2 m-0 rounded-2xl bg-surface-container px-4 py-2 text-[11px] font-semibold text-on-surface-variant"
+          >
+            {filterNotice}
+          </p>
+        ) : null}
+
+
+
         {wallets.length ? (
           <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
             <input
